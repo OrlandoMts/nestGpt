@@ -10,7 +10,6 @@ export class ChatController {
   @Post('orthography-check')
   @HttpCode(HttpStatus.CREATED)
   orthographyCheck(@Body() orthographyDto: OrthographyDto) {
-    return orthographyDto;
-    // return this.chatService.orthographyCheck();
+    return this.chatService.orthographyCheck(orthographyDto);
   }
 }

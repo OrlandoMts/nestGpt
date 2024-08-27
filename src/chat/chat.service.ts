@@ -1,11 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { OrthographyDto } from './dto';
 import { orthographyCheckUC } from './use-cases';
 
 @Injectable()
 export class ChatService {
-  public async orthographyCheck() {
+  public async orthographyCheck(body: OrthographyDto) {
+    const data = { prompt: body.prompt };
     try {
-      return await orthographyCheckUC();
+      return await orthographyCheckUC(data);
     } catch (error: any) {
       this._handleError(
         error,
