@@ -1,5 +1,7 @@
-import { Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+
 import { ChatService } from './chat.service';
+import { OrthographyDto } from './dto';
 
 @Controller('chat')
 export class ChatController {
@@ -7,32 +9,8 @@ export class ChatController {
 
   @Post('orthography-check')
   @HttpCode(HttpStatus.CREATED)
-  orthographyCheck() {
-    return this.chatService.orthographyCheck();
+  orthographyCheck(@Body() orthographyDto: OrthographyDto) {
+    return orthographyDto;
+    // return this.chatService.orthographyCheck();
   }
-  /* 
-  @Post()
-  create(@Body() createChatDto: CreateChatDto) {
-    return this.chatService.create(createChatDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.chatService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.chatService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChatDto: UpdateChatDto) {
-    return this.chatService.update(+id, updateChatDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.chatService.remove(+id);
-  } */
 }

@@ -1,36 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { orthographyCheckUC } from './use-cases';
 
 @Injectable()
 export class ChatService {
   public async orthographyCheck() {
-    return await orthographyCheckUC();
-    // return {
-    //   message: 'Created',
-    //   ok: true,
-    //   data: {
-    //     message: 'Orthography check',
-    //   },
-    // };
+    try {
+      return await orthographyCheckUC();
+    } catch (error: any) {
+      this._handleError(
+        error,
+        'Error al realizar la verificación ortográfica.',
+      );
+    }
   }
 
-  /* create(createChatDto: CreateChatDto) {
-    return 'This action adds a new chat';
+  private _handleError(error: any, msg: string = 'Algo salio mal.') {
+    throw new HttpException(
+      {
+        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: msg,
+        error: error.message || 'Internal server error',
+      },
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
   }
-
-  findAll() {
-    return `This action returns all chat`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} chat`;
-  }
-
-  update(id: number, updateChatDto: UpdateChatDto) {
-    return `This action updates a #${id} chat`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} chat`;
-  } */
 }
