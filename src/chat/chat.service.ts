@@ -1,13 +1,16 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import OpenAI from 'openai';
 import { OrthographyDto } from './dto';
 import { orthographyCheckUC } from './use-cases';
 
 @Injectable()
 export class ChatService {
+  private openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
   public async orthographyCheck(body: OrthographyDto) {
     const data = { prompt: body.prompt };
     try {
-      return await orthographyCheckUC(data);
+      return await orthographyCheckUC(this.openai, data);
     } catch (error: any) {
       this._handleError(
         error,
