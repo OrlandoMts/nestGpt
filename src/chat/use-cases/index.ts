@@ -1,1 +1,1 @@
-export * from './orthographyCheckUC';
+export * from './orthographyCheck.uc';

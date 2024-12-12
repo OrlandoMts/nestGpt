@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
 import { ChatService } from './chat.service';
-import { OrthographyDto } from './dto';
+import { OrthographyDto } from './dtos';
 
 @Controller('chat')
 export class ChatController {

@@ -1,16 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
-import { OrthographyDto } from './dto';
+import { OrthographyDto } from './dtos';
 import { orthographyCheckUC } from './use-cases';
 
 @Injectable()
 export class ChatService {
+  // Solo va llamar casos de uso
   private openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
   public async orthographyCheck(body: OrthographyDto) {
     const data = { prompt: body.prompt };
     try {
-      return await orthographyCheckUC(this.openai, data);
+      const result = await orthographyCheckUC(this.openai, data);
+      const resp = JSON.parse(result);
+      return resp;
     } catch (error: any) {
       this._handleError(
         error,
@@ -23,7 +26,7 @@ export class ChatService {
     throw new HttpException(
       {
         statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-        message: msg,
+        message: error.message || msg,
         error: error.message || 'Internal server error',
       },
       HttpStatus.INTERNAL_SERVER_ERROR,
