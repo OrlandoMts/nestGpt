@@ -9,7 +9,7 @@ import {
 
 import { Response } from 'express';
 import { ChatService } from './chat.service';
-import { OrthographyDto, ProsConsDiscusserDto } from './dtos';
+import { OrthographyDto, ProsConsDiscusserDto, TranslateDto } from './dtos';
 
 @Controller('chat')
 export class ChatController {
@@ -42,5 +42,11 @@ export class ChatController {
       res.write(part.choices[0]?.delta?.content || '');
     }
     res.end();
+  }
+
+  @Post('translate')
+  @HttpCode(HttpStatus.CREATED)
+  translateText(@Body() translateDto: TranslateDto) {
+    return this.chatService.translateText(translateDto);
   }
 }

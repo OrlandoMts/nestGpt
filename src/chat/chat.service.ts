@@ -1,11 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 
-import { OrthographyDto, ProsConsDiscusserDto } from './dtos';
+import { OrthographyDto, ProsConsDiscusserDto, TranslateDto } from './dtos';
 import {
   orthographyCheckUC,
   prosConsDicusserStreamUC,
   prosConsDicusserUC,
+  translateUC,
 } from './use-cases';
 
 @Injectable()
@@ -41,6 +42,16 @@ export class ChatService {
     try {
       const data = { prompt: body.prompt };
       const result = await prosConsDicusserStreamUC(this.openai, data);
+      return result;
+    } catch (error) {
+      this._handleError(error, 'Error al realizar la comparativa.');
+    }
+  }
+
+  public async translateText(body: TranslateDto) {
+    try {
+      const data = { prompt: body.prompt, lang: body.lang };
+      const result = await translateUC(this.openai, data);
       return result;
     } catch (error) {
       this._handleError(error, 'Error al realizar la comparativa.');
