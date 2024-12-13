@@ -1,7 +1,15 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Res,
+} from '@nestjs/common';
 
+import { Response } from 'express';
 import { ChatService } from './chat.service';
-import { OrthographyDto } from './dtos';
+import { OrthographyDto, ProsConsDiscusserDto } from './dtos';
 
 @Controller('chat')
 export class ChatController {
@@ -11,5 +19,28 @@ export class ChatController {
   @HttpCode(HttpStatus.CREATED)
   orthographyCheck(@Body() orthographyDto: OrthographyDto) {
     return this.chatService.orthographyCheck(orthographyDto);
+  }
+
+  @Post('pros-cons-discusser')
+  @HttpCode(HttpStatus.CREATED)
+  prosConsDicusser(@Body() prosConsDiscusserDto: ProsConsDiscusserDto) {
+    return this.chatService.prosConsDicusser(prosConsDiscusserDto);
+  }
+
+  @Post('pros-cons-discusser-stream')
+  @HttpCode(HttpStatus.CREATED)
+  async prosConsDicusserStream(
+    @Body() prosConsDiscusserDto: ProsConsDiscusserDto,
+    @Res() res: Response,
+  ) {
+    const stream =
+      await this.chatService.prosConsDicusserStream(prosConsDiscusserDto);
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(HttpStatus.OK);
+    for await (const part of stream) {
+      res.write(part.choices[0]?.delta?.content || '');
+    }
+    res.end();
   }
 }

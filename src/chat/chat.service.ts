@@ -1,7 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
-import { OrthographyDto } from './dtos';
-import { orthographyCheckUC } from './use-cases';
+
+import { OrthographyDto, ProsConsDiscusserDto } from './dtos';
+import {
+  orthographyCheckUC,
+  prosConsDicusserStreamUC,
+  prosConsDicusserUC,
+} from './use-cases';
 
 @Injectable()
 export class ChatService {
@@ -19,6 +24,26 @@ export class ChatService {
         error,
         'Error al realizar la verificación ortográfica.',
       );
+    }
+  }
+
+  public async prosConsDicusser(body: ProsConsDiscusserDto) {
+    try {
+      const data = { prompt: body.prompt };
+      const result = await prosConsDicusserUC(this.openai, data);
+      return result;
+    } catch (error) {
+      this._handleError(error, 'Error al realizar la comparativa.');
+    }
+  }
+
+  public async prosConsDicusserStream(body: ProsConsDiscusserDto) {
+    try {
+      const data = { prompt: body.prompt };
+      const result = await prosConsDicusserStreamUC(this.openai, data);
+      return result;
+    } catch (error) {
+      this._handleError(error, 'Error al realizar la comparativa.');
     }
   }
 
