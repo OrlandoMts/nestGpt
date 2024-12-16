@@ -202,3 +202,8 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+
+# Exclude folder gen
+/gen/*
+!/gen/.gitkeep

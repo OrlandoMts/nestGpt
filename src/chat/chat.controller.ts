@@ -1,15 +1,22 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Res,
 } from '@nestjs/common';
 
 import { Response } from 'express';
 import { ChatService } from './chat.service';
-import { OrthographyDto, ProsConsDiscusserDto, TranslateDto } from './dtos';
+import {
+  OrthographyDto,
+  ProsConsDiscusserDto,
+  TextToAudioDto,
+  TranslateDto,
+} from './dtos';
 
 @Controller('chat')
 export class ChatController {
@@ -48,5 +55,26 @@ export class ChatController {
   @HttpCode(HttpStatus.CREATED)
   translateText(@Body() translateDto: TranslateDto) {
     return this.chatService.translateText(translateDto);
+  }
+
+  @Post('text-to-audio')
+  @HttpCode(HttpStatus.CREATED)
+  async textToAudio(
+    @Body() textToAudioDto: TextToAudioDto,
+    @Res() res: Response,
+  ) {
+    const { speechFile } = await this.chatService.textToAudio(textToAudioDto); //filePath
+    res.setHeader('Content-Type', 'audio/mp3');
+    res.status(HttpStatus.OK);
+    res.sendFile(speechFile);
+  }
+
+  @Get('text-to-audio/:name')
+  @HttpCode(HttpStatus.CREATED)
+  public textToAudioGetter(@Param('name') nameFile, @Res() res: Response) {
+    const file = this.chatService.textToAudioGetter(nameFile);
+    res.setHeader('Content-Type', 'audio/mp3');
+    res.status(HttpStatus.OK);
+    res.sendFile(file);
   }
 }

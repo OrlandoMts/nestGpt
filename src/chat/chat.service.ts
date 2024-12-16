@@ -1,11 +1,20 @@
+import * as fs from 'fs';
+import * as path from 'path';
+
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 
-import { OrthographyDto, ProsConsDiscusserDto, TranslateDto } from './dtos';
+import {
+  OrthographyDto,
+  ProsConsDiscusserDto,
+  TextToAudioDto,
+  TranslateDto,
+} from './dtos';
 import {
   orthographyCheckUC,
   prosConsDicusserStreamUC,
   prosConsDicusserUC,
+  textToAudioUC,
   translateUC,
 } from './use-cases';
 
@@ -58,14 +67,38 @@ export class ChatService {
     }
   }
 
-  private _handleError(error: any, msg: string = 'Algo salio mal.') {
+  public async textToAudio(body: TextToAudioDto) {
+    try {
+      const { prompt, voice } = body;
+      const result = await textToAudioUC(this.openai, { prompt, voice });
+      return result;
+    } catch (error) {
+      this._handleError(error, 'Error al realizar el audio.');
+    }
+  }
+
+  public textToAudioGetter(name: string) {
+    const folderPath = path.resolve(__dirname, '../../gen/audios');
+    const filePath = path.join(folderPath, `${name}.mp3`);
+    const fileExists = fs.existsSync(filePath);
+    if (!fileExists) {
+      this._handleError({}, 'No se encontró el archivo.', HttpStatus.NOT_FOUND);
+    }
+    return filePath;
+  }
+
+  private _handleError(
+    error: any,
+    msg: string = 'Algo salio mal.',
+    statusC: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,
+  ) {
     throw new HttpException(
       {
-        statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+        statusCode: statusC,
         message: error.message || msg,
         error: error.message || 'Internal server error',
       },
-      HttpStatus.INTERNAL_SERVER_ERROR,
+      statusC,
     );
   }
 }
