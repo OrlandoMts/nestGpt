@@ -12,6 +12,7 @@ import {
 import { Response } from 'express';
 import { ChatService } from './chat.service';
 import {
+  GeneralDto,
   OrthographyDto,
   ProsConsDiscusserDto,
   TextToAudioDto,
@@ -70,11 +71,17 @@ export class ChatController {
   }
 
   @Get('text-to-audio/:name')
-  @HttpCode(HttpStatus.CREATED)
+  @HttpCode(HttpStatus.OK)
   public textToAudioGetter(@Param('name') nameFile, @Res() res: Response) {
     const file = this.chatService.textToAudioGetter(nameFile);
     res.setHeader('Content-Type', 'audio/mp3');
     res.status(HttpStatus.OK);
     res.sendFile(file);
+  }
+
+  @Get('indelpro')
+  @HttpCode(HttpStatus.OK)
+  public reportsOfDestis(@Body() body: GeneralDto) {
+    return this.chatService.reportsOfDestis(body);
   }
 }

@@ -5,6 +5,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import OpenAI from 'openai';
 
 import {
+  GeneralDto,
   OrthographyDto,
   ProsConsDiscusserDto,
   TextToAudioDto,
@@ -14,6 +15,7 @@ import {
   orthographyCheckUC,
   prosConsDicusserStreamUC,
   prosConsDicusserUC,
+  reportsOfDestisUC,
   textToAudioUC,
   translateUC,
 } from './use-cases';
@@ -85,6 +87,16 @@ export class ChatService {
       this._handleError({}, 'No se encontró el archivo.', HttpStatus.NOT_FOUND);
     }
     return filePath;
+  }
+
+  public reportsOfDestis(body: GeneralDto) {
+    try {
+      const { prompt } = body;
+      const result = reportsOfDestisUC(this.openai, prompt);
+      return result;
+    } catch (error) {
+      this._handleError(error, 'Error al realizar la consulta en el portal.');
+    }
   }
 
   private _handleError(
