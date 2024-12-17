@@ -3,10 +3,7 @@ import * as path from 'path';
 
 import OpenAI from 'openai';
 
-interface OptionsItf {
-  prompt: string;
-  voice?: string;
-}
+import { OptionsItf } from '../interfaces';
 
 // https://platform.openai.com/usage
 export const textToAudioUC = async (openai: OpenAI, options: OptionsItf) => {

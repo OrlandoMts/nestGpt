@@ -12,6 +12,7 @@ import {
   TranslateDto,
 } from './dtos';
 import {
+  absenceUC,
   orthographyCheckUC,
   prosConsDicusserStreamUC,
   prosConsDicusserUC,
@@ -89,13 +90,23 @@ export class ChatService {
     return filePath;
   }
 
-  public reportsOfDestis(body: GeneralDto) {
+  public async reportsOfDestis(body: GeneralDto) {
     try {
       const { prompt } = body;
-      const result = reportsOfDestisUC(this.openai, prompt);
+      const result = await reportsOfDestisUC(this.openai, prompt);
       return result;
     } catch (error) {
       this._handleError(error, 'Error al realizar la consulta en el portal.');
+    }
+  }
+
+  public async absence(body: GeneralDto) {
+    try {
+      const data = { prompt: body.prompt };
+      const result = await absenceUC(this.openai, data);
+      return result;
+    } catch (error) {
+      this._handleError(error, 'Error al realizar la consulta en la política.');
     }
   }
 

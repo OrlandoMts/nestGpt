@@ -1,8 +1,6 @@
 import OpenAI from 'openai';
 
-interface OptionsItf {
-  prompt: string;
-}
+import { OptionsItf } from '../interfaces';
 
 // https://platform.openai.com/usage
 export const orthographyCheckUC = async (

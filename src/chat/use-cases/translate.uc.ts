@@ -1,9 +1,6 @@
 import OpenAI from 'openai';
 
-interface OptionsItf {
-  prompt: string;
-  lang: string;
-}
+import { OptionsItf } from '../interfaces';
 
 // https://platform.openai.com/usage
 export const translateUC = async (openai: OpenAI, options: OptionsItf) => {

@@ -84,4 +84,17 @@ export class ChatController {
   public reportsOfDestis(@Body() body: GeneralDto) {
     return this.chatService.reportsOfDestis(body);
   }
+
+  @Post('absence')
+  @HttpCode(HttpStatus.OK)
+  public async absence(@Body() body: GeneralDto, @Res() res: Response) {
+    const stream = await this.chatService.absence(body);
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(HttpStatus.OK);
+    for await (const part of stream) {
+      res.write(part.choices[0]?.delta?.content || '');
+    }
+    res.end();
+  }
 }

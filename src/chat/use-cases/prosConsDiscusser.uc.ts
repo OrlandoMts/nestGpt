@@ -1,8 +1,6 @@
 import OpenAI from 'openai';
 
-interface OptionsItf {
-  prompt: string;
-}
+import { OptionsItf } from '../interfaces';
 
 export const prosConsDicusserUC = async (
   openai: OpenAI,
